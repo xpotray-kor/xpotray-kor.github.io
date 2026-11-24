@@ -32,7 +32,7 @@ function renderHeader() {
   el.className = "site-header";
   el.innerHTML = `
     <div class="container">
-      <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true">공</span>${SITE.name}</a>
+      <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12V3M12 12L4 16.5V7.5L12 3l8 4.5v9L12 12" stroke="currentColor" stroke-width="1.7"/><path d="M4 16.5L12 21l8-4.5" stroke="var(--accent)" stroke-width="2.2"/><path d="M6.5 10.2l3 -1.7v3.2l-3 1.7z" fill="currentColor" opacity=".35"/></svg></span>${SITE.name}</a>
       <button class="menu-btn" aria-expanded="false" aria-controls="nav">메뉴</button>
       <nav class="nav" id="nav" aria-label="주 메뉴">${links}
         <a class="btn btn-primary btn-sm" href="${kakaoHref()}">무료 상담</a>
