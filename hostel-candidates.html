@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="서울 상업지역 상가 경매 물건 중 최저가 3억 미만을 추려 호스텔 전환 가능성으로 나눈 검토표입니다.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<title>서울 호스텔 후보 상가</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 한 장짜리 입찰 검토 시트 — 요약 → 우선 후보 카드 → 전체 표 → 체크리스트 */
+:root{
+ --bg:#f6f7f5;--surface:#ffffff;--fg:#1c2421;--muted:#5d6b66;--line:#dde3e0;
+ --accent:#1f6f5c;--accent-soft:#e3f1ec;--warn:#9a5b00;--warn-soft:#fbf0dc;--bad:#a23a3a;--bad-soft:#f8e5e5;--chip:#eef1ef;
+ --f-body:"IBM Plex Sans KR",system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+ --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#121715;--surface:#1a211e;--fg:#e4ebe8;--muted:#9aa8a3;--line:#2c3632;
+ --accent:#5cc4a6;--accent-soft:#183a31;--warn:#e7b35c;--warn-soft:#3a2d16;--bad:#ef8c8c;--bad-soft:#3d1f1f;--chip:#242d29;color-scheme:dark}}
+:root[data-theme="dark"]{
+ --bg:#121715;--surface:#1a211e;--fg:#e4ebe8;--muted:#9aa8a3;--line:#2c3632;
+ --accent:#5cc4a6;--accent-soft:#183a31;--warn:#e7b35c;--warn-soft:#3a2d16;--bad:#ef8c8c;--bad-soft:#3d1f1f;--chip:#242d29;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:36px}
+h1{font-size:1.75rem;line-height:1.3;margin:0;text-wrap:balance;font-weight:700}
+h2{font-size:1.15rem;margin:0 0 12px;font-weight:700}
+.eyebrow{font-size:.78rem;letter-spacing:.06em;color:var(--accent);font-weight:600;margin-bottom:6px}
+.lede{color:var(--muted);max-width:66ch;margin:10px 0 0}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.stat b{display:block;font-family:var(--f-num);font-size:1.5rem;line-height:1.2}
+.stat span{font-size:.82rem;color:var(--muted)}
+.verdict{background:var(--warn-soft);color:var(--fg);border-radius:10px;padding:14px 16px;font-size:.95rem}
+.verdict strong{color:var(--warn)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.card .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.card h3{margin:0;font-size:1rem}
+.card .addr{color:var(--muted);font-size:.85rem}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:.88rem}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.note{font-size:.86rem;border-top:1px dashed var(--line);padding-top:8px}
+.pill{display:inline-block;font-size:.75rem;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.t-A{background:var(--accent-soft);color:var(--accent)}
+.t-B{background:var(--chip);color:var(--fg)}
+.t-C,.t-X{background:var(--bad-soft);color:var(--bad)}
+.urgent{background:var(--warn-soft);color:var(--warn)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.filters button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.filters button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:.86rem}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.76rem;letter-spacing:.04em;color:var(--muted);font-weight:600;background:var(--bg);position:sticky;top:0}
+td.r,th.r{text-align:right}
+tr:last-child td{border-bottom:0}
+.flags{color:var(--muted);font-size:.78rem}
+.check{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.check li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.9rem}
+.check li b{display:block;margin-bottom:2px}
+.foot{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+*{box-sizing:border-box}
+body{margin:0;word-break:keep-all;overflow-wrap:break-word}
+a{color:var(--accent);text-underline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+ <header>
+  <p style="margin:0 0 12px;font-size:14px"><a href="log.html">← 호스텔 오픈 일지</a> · <a href="index.html">홈</a></p>
+  <div class="eyebrow">스피드옥션 경매 검색 · 2026.11.25 ~ 2027.02.25 매각기일</div>
+  <h1>서울 상업지역 상가, 최저가 3억 미만 호스텔 전환 후보</h1>
+  <p class="lede">상업지역에 있는 근린시설·근린상가 중 진행 중인 물건을 검색했습니다. 전용 40㎡ 이상이고 권리상 큰 하자가 없는 물건만 남긴 뒤, 숙박시설로 용도변경할 수 있을지를 기준으로 등급을 나눴습니다.</p>
+  <div class="stats">
+   <div class="stat"><b>112</b><span>검색 결과 (서울·3억 미만)</span></div>
+   <div class="stat"><b>24</b><span>40㎡ 이상, 권리 하자 제외 후</span></div>
+   <div class="stat"><b id="cntA">–</b><span>우선 검토 (지상층)</span></div>
+   <div class="stat"><b>0</b><span>건물 전체 매각 물건</span></div>
+  </div>
+ </header>
+
+ <div class="verdict"><strong>결론:</strong> 전부 집합건물 안의 구분상가 호실이고, 건물 전체를 파는 물건은 없습니다. 호스텔 전환이 확실한 물건은 없으며, 아래 우선 후보도 건축물대장, 관리단 동의, 구청 사전 질의를 거쳐야 실제로 가능한지 알 수 있습니다.</div>
+
+ <section>
+  <h2>우선 검토 후보</h2>
+  <div class="cards">
+   <article class="card">
+    <div class="top"><h3>새롬프라자 4·5·7·8층</h3><span class="pill urgent">11/25 입찰 임박</span></div>
+    <div class="addr">강서구 내발산동 750-2 · 서울남부 6계 2025-9571</div>
+    <dl class="kv"><dt>면적</dt><dd class="num">53.1㎡ / 78.75㎡ (16~24평)</dd><dt>최저가</dt><dd class="num">1.96억 / 2.91억 (신건 100%)</dd></dl>
+    <p class="note">같은 사건으로 같은 건물 호실 8개가 한꺼번에 나왔습니다. 층 단위로 모으면 숙박 전환 협의에 유리합니다. 한 층(2개 호실)을 다 사면 약 4.87억이라 예산을 넘습니다.</p>
+   </article>
+   <article class="card">
+    <div class="top"><h3>아임캐슬 3층 301호</h3><span class="pill t-A">12/15</span></div>
+    <div class="addr">은평구 응암동 376-42 · 서울서부 5계 2025-2176</div>
+    <dl class="kv"><dt>면적</dt><dd class="num">80.02㎡ (24.2평)</dd><dt>최저가</dt><dd class="num">2.77억 (1회 유찰, 80%)</dd></dl>
+    <p class="note">지상층이고 면적이 적당합니다. 건물에 주거가 섞여 있는지 건축물대장으로 먼저 확인해야 합니다. 토지거래허가구역입니다.</p>
+   </article>
+   <article class="card">
+    <div class="top"><h3>비호디동 3층 가3호</h3><span class="pill t-A">11/30</span></div>
+    <div class="addr">성동구 용답동 234 · 서울동부 4계 2025-52108</div>
+    <dl class="kv"><dt>면적</dt><dd class="num">79.27㎡ (24평)</dd><dt>최저가</dt><dd class="num">2.18억 (3회 유찰, 51%)</dd></dl>
+    <p class="note">감정가 4.25억에서 절반 가까이 떨어졌습니다. 같은 건물 2층 가19호(44.76㎡, 2.12억, 1/4 입찰)도 함께 나와 있습니다.</p>
+   </article>
+   <article class="card">
+    <div class="top"><h3>종로1번가 2층 202호</h3><span class="pill t-B">12/10</span></div>
+    <div class="addr">종로구 관철동 155 · 서울중앙 7계 2023-116465</div>
+    <dl class="kv"><dt>면적</dt><dd class="num">45.28㎡ (13.7평)</dd><dt>최저가</dt><dd class="num">1.82억 (4회 유찰, 41%)</dd></dl>
+    <p class="note">종각역 근처라 외국인 관광객 수요는 가장 좋은 입지입니다. 다만 면적이 작아 객실은 2~3개가 한계이고, 공동담보도 확인해야 합니다.</p>
+   </article>
+  </div>
+ </section>
+
+ <section>
+  <h2>전체 24건</h2>
+  <div class="filters" role="group" aria-label="등급 필터">
+   <button type="button" id="f-all" data-f="all" aria-pressed="true">전체</button>
+   <button type="button" id="f-A" data-f="A" aria-pressed="false">우선 검토</button>
+   <button type="button" id="f-B" data-f="B" aria-pressed="false">조건부</button>
+   <button type="button" id="f-X" data-f="X" aria-pressed="false">비추천 (지하·대형몰)</button>
+  </div>
+  <div class="tbl">
+   <table>
+    <thead><tr><th>등급</th><th>매각기일</th><th>법원·사건</th><th>소재지</th><th class="r">전용면적</th><th class="r">감정가</th><th class="r">최저가</th><th>진행</th></tr></thead>
+    <tbody id="tb"></tbody>
+   </table>
+  </div>
+ </section>
+
+ <section>
+  <h2>입찰 전 확인할 것</h2>
+  <ul class="check">
+   <li><b>건축물대장</b>같은 건물에 공동주택(주거)이 있으면 숙박시설 용도변경이 막히거나 입주민 반대가 거의 확실합니다.</li>
+   <li><b>관리단 규약과 동의</b>집합건물 호실을 숙박업으로 바꾸려면 관리규약과 구분소유자 동의를 먼저 확인해야 합니다.</li>
+   <li><b>교육환경보호구역</b>학교 경계에서 200m 안이면 숙박업 허가가 나지 않습니다.</li>
+   <li><b>소방·피난 기준</b>용도변경할 때 스프링클러, 직통계단 같은 설비가 추가될 수 있으니 공사비를 따로 잡아두세요.</li>
+   <li><b>관리비 체납</b>오래 유찰된 대형 상가는 체납 관리비가 큽니다. 공용부분 체납분은 낙찰자가 떠안습니다.</li>
+   <li><b>구청 사전 질의</b>건축과와 위생과에 숙박시설 용도변경과 숙박업 신고가 가능한지 미리 물어보는 게 가장 확실합니다.</li>
+  </ul>
+ </section>
+
+ <p class="foot">출처: 스피드옥션 종합검색 (조건: 서울, 근린시설·근린상가, 상업지역, 진행 물건, 최저가 3억 이하). 제외 기준: 전용 40㎡ 미만, 지분매각·건물만매각·유치권·대지권미등기·위반건축물·선순위 권리. 등급은 공개된 목록 정보만 보고 매긴 1차 판단입니다. 입찰 전에 매각물건명세서, 현황조사서, 감정평가서, 등기부등본을 반드시 직접 확인하세요.</p>
+</div>
+
+<script>
+const rows=[{"date":"12/17","court":"서울남부 10계","no":"2025-457","addr":"구로구 구로동 3-25 신도림테크노마트 제10층 제011호","area":135.34,"py":40.94,"gam":"12.5억","low":"1.68억","lowN":167772000,"res":"유찰 9회","pct":"13","flags":"","tier":"C"},{"date":"01/05","court":"서울중앙 21계","no":"2025-102363 (1)","addr":"동작구 노량진동 16-1 노량진드림스퀘어복합빌딩 지하1층디비04호","area":107.25,"py":32.44,"gam":"5.91억","low":"1.94억","lowN":193658000,"res":"유찰 5회","pct":"33","flags":"재매각","tier":"X"},{"date":"12/10","court":"서울남부 3계","no":"2026-117 (2)","addr":"강서구 가양동 1480-1 이스타빌2차 제지1층 제비01호","area":100.56,"py":30.42,"gam":"2.74억","low":"1.75억","lowN":175360000,"res":"유찰 2회","pct":"64","flags":"토지거래허가구역","tier":"X"},{"date":"12/14","court":"서울동부 3계","no":"2025-51361 (2)","addr":"강동구 천호동 453-5 로데오팰리스 지2층비202호","area":97.13,"py":29.38,"gam":"5.83억","low":"2.39억","lowN":238797000,"res":"유찰 4회","pct":"41","flags":"재정비촉진지구","tier":"X"},{"date":"12/15","court":"서울서부 5계","no":"2025-2176","addr":"은평구 응암동 376-42 아임캐슬 3층301호","area":80.02,"py":24.21,"gam":"3.46억","low":"2.77억","lowN":276800000,"res":"유찰 1회","pct":"80","flags":"토지거래허가구역","tier":"A"},{"date":"11/30","court":"서울동부 4계","no":"2025-52108","addr":"성동구 용답동 234 비호디동 3층가3호","area":79.27,"py":23.98,"gam":"4.25억","low":"2.18억","lowN":217600000,"res":"유찰 3회","pct":"51","flags":"토지거래허가구역","tier":"A"},{"date":"11/25","court":"서울남부 6계","no":"2025-9571 (2)","addr":"강서구 내발산동 750-2 새롬프라자 제4층 제401호","area":78.75,"py":23.82,"gam":"2.91억","low":"2.91억","lowN":291000000,"res":"신건","pct":"100","flags":"","tier":"A"},{"date":"11/25","court":"서울남부 6계","no":"2025-9571 (7)","addr":"강서구 내발산동 750-2 새롬프라자 제7층 제701호","area":78.75,"py":23.82,"gam":"2.91억","low":"2.91억","lowN":291000000,"res":"신건","pct":"100","flags":"","tier":"A"},{"date":"11/25","court":"서울남부 6계","no":"2025-9571 (10)","addr":"강서구 내발산동 750-2 새롬프라자 제8층 제801호","area":78.75,"py":23.82,"gam":"2.91억","low":"2.91억","lowN":291000000,"res":"신건","pct":"100","flags":"","tier":"A"},{"date":"12/02","court":"서울남부 14계","no":"2026-3691","addr":"구로구 구로동 104-10 제2층 제204호","area":68.56,"py":20.74,"gam":"2.02억","low":"1.62억","lowN":161600000,"res":"유찰 1회","pct":"80","flags":"대항력있는임차인,토지거래허가구역","tier":"B"},{"date":"12/10","court":"서울남부 3계","no":"2026-117 (4)","addr":"강서구 가양동 1480-1 이스타빌2차 제지1층 제비03호","area":56.88,"py":17.21,"gam":"1.67억","low":"1.07억","lowN":106880000,"res":"유찰 2회","pct":"64","flags":"토지거래허가구역","tier":"X"},{"date":"12/10","court":"서울남부 3계","no":"2026-117 (6)","addr":"강서구 가양동 1480-1 이스타빌2차 제지1층 제비05호","area":56.88,"py":17.21,"gam":"1.67억","low":"1.07억","lowN":106880000,"res":"유찰 2회","pct":"64","flags":"토지거래허가구역","tier":"X"},{"date":"12/10","court":"서울남부 3계","no":"2026-117 (5)","addr":"강서구 가양동 1480-1 이스타빌2차 제지1층 제비04호","area":55.44,"py":16.77,"gam":"1.62억","low":"1.04억","lowN":103680000,"res":"유찰 2회","pct":"64","flags":"토지거래허가구역","tier":"X"},{"date":"12/10","court":"서울남부 3계","no":"2026-117 (3)","addr":"강서구 가양동 1480-1 이스타빌2차 제지1층 제비02호","area":54,"py":16.33,"gam":"1.58억","low":"1.01억","lowN":101120000,"res":"유찰 2회","pct":"64","flags":"토지거래허가구역","tier":"X"},{"date":"11/25","court":"서울남부 6계","no":"2025-9571 (3)","addr":"강서구 내발산동 750-2 새롬프라자 제4층 제402호","area":53.1,"py":16.06,"gam":"1.96억","low":"1.96억","lowN":196000000,"res":"신건","pct":"100","flags":"","tier":"A"},{"date":"11/25","court":"서울남부 6계","no":"2025-9571 (5)","addr":"강서구 내발산동 750-2 새롬프라자 제5층 제502호","area":53.1,"py":16.06,"gam":"1.96억","low":"1.96억","lowN":196000000,"res":"신건","pct":"100","flags":"","tier":"A"},{"date":"11/25","court":"서울남부 6계","no":"2025-9571 (8)","addr":"강서구 내발산동 750-2 새롬프라자 제7층 제702호","area":53.1,"py":16.06,"gam":"1.96억","low":"1.96억","lowN":196000000,"res":"신건","pct":"100","flags":"","tier":"A"},{"date":"11/25","court":"서울남부 6계","no":"2025-9571 (11)","addr":"강서구 내발산동 750-2 새롬프라자 제8층 제802호","area":53.1,"py":16.06,"gam":"1.96억","low":"1.96억","lowN":196000000,"res":"신건","pct":"100","flags":"","tier":"A"},{"date":"11/30","court":"서울동부 4계","no":"2025-51802","addr":"송파구 거여동 605-3 송파헤븐시티더테라스 2층208호","area":47.27,"py":14.3,"gam":"4.74억","low":"1.55억","lowN":155320000,"res":"유찰 5회","pct":"33","flags":"토지거래허가구역","tier":"B"},{"date":"12/10","court":"서울중앙 7계","no":"2023-116465 (1)","addr":"종로구 관철동 155 종로1번가 2층202호","area":45.28,"py":13.7,"gam":"4.44억","low":"1.82억","lowN":181862000,"res":"유찰 4회","pct":"41","flags":"관련사건,공동담보","tier":"B"},{"date":"12/10","court":"서울남부 3계","no":"2026-117 (7)","addr":"강서구 가양동 1480-1 이스타빌2차 제지1층 제비06호","area":44.8,"py":13.55,"gam":"1.44억","low":"9,216만","lowN":92160000,"res":"유찰 2회","pct":"64","flags":"토지거래허가구역","tier":"X"},{"date":"01/04","court":"서울동부 5계","no":"2025-51642","addr":"성동구 용답동 234 비호디동 2층가19호","area":44.76,"py":13.54,"gam":"3.31억","low":"2.12억","lowN":211840000,"res":"유찰 2회","pct":"64","flags":"","tier":"B"},{"date":"01/05","court":"서울서부 1계","no":"2026-30","addr":"은평구 대조동 241 베르디움스테이1 401동 1층133호","area":43.82,"py":13.26,"gam":"7.2억","low":"2.36억","lowN":235930000,"res":"유찰 5회","pct":"33","flags":"토지거래허가구역","tier":"B"},{"date":"12/10","court":"서울남부 3계","no":"2026-6309","addr":"강서구 마곡동 799-2 푸리마타워 제5층 제509호","area":42.31,"py":12.8,"gam":"3.06억","low":"2.45억","lowN":244800000,"res":"유찰 1회","pct":"80","flags":"대항력있는임차인,토지거래허가구역","tier":"B"}];
+const label={A:"우선 검토",B:"조건부",C:"비추천",X:"비추천"};
+const why=r=>r.tier==="X"?"지하층":r.tier==="C"?"대형몰":"";
+rows.sort((a,b)=>a.date.localeCompare(b.date)||a.no.localeCompare(b.no));
+const tb=document.getElementById("tb");
+function render(f){
+ tb.innerHTML=rows.filter(r=>f==="all"||r.tier===f||(f==="X"&&r.tier==="C")).map(r=>
+  '<tr><td><span class="pill t-'+r.tier+'">'+label[r.tier]+(why(r)?' · '+why(r):'')+'</span></td>'+
+  '<td class="num">'+r.date+'</td><td>'+r.court+'<br><span class="num">'+r.no+'</span></td>'+
+  '<td>'+r.addr+(r.flags?'<div class="flags">'+r.flags+'</div>':'')+'</td>'+
+  '<td class="r num">'+r.area+'㎡<br><span class="flags">'+r.py+'평</span></td>'+
+  '<td class="r num">'+r.gam+'</td><td class="r num"><b>'+r.low+'</b><br><span class="flags">'+r.pct+'%</span></td>'+
+  '<td>'+r.res+'</td></tr>').join("");
+}
+document.getElementById("cntA").textContent=rows.filter(r=>r.tier==="A").length;
+document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("click",()=>{
+ document.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+ render(b.dataset.f);
+}));
+render("all");
+</script>
+</body>
+</html>
