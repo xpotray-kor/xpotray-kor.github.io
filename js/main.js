@@ -1,8 +1,8 @@
 /* 사이트 공통 설정 — 상호, 연락처는 여기 한 곳만 바꾸면 전체 페이지에 반영됩니다. */
 const SITE = {
-  name: "Vivaldi 사계",
-  nameKo: "비발디 사계",
-  company: "비발디",               // 상호
+  name: "공간을 그리다",
+  nameKo: "공간을 그리다",
+  company: "공간을 그리다",             // 상호
   ceo: "찰스",
   phone: "010-5555-8888",
   email: "",                      // TODO: 문의 이메일
@@ -32,7 +32,7 @@ function renderHeader() {
   el.className = "site-header";
   el.innerHTML = `
     <div class="container">
-      <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true">V</span>${SITE.name}</a>
+      <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true">공</span>${SITE.name}</a>
       <button class="menu-btn" aria-expanded="false" aria-controls="nav">메뉴</button>
       <nav class="nav" id="nav" aria-label="주 메뉴">${links}
         <a class="btn btn-primary btn-sm" href="${kakaoHref()}">무료 상담</a>
@@ -60,7 +60,7 @@ function renderFooter() {
   el.innerHTML = `
     <div class="container">
       <div>
-        <h4>${SITE.name} (${SITE.nameKo})</h4>
+        <h4>${SITE.name}${SITE.nameKo && SITE.nameKo !== SITE.name ? ` (${SITE.nameKo})` : ""}</h4>
         <p style="margin:0 0 8px">경매·공매로 싸게 사고, 고쳐서, 숙박과 임대로 채웁니다.<br>낙찰부터 운영까지 한 팀이 끝까지 책임지는 부동산 파트너.</p>
         <p style="margin:0">© ${new Date().getFullYear()} ${SITE.company}. All rights reserved.</p>
       </div>
