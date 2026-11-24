@@ -3,10 +3,11 @@ const SITE = {
   name: "Vivaldi 사계",
   nameKo: "비발디 사계",
   company: "비발디",               // 상호
-  ceo: "",                        // TODO: 대표 성함 (비워두면 숨김)
+  ceo: "찰스",
   phone: "010-5555-8888",
   email: "",                      // TODO: 문의 이메일
-  kakao: "",                      // TODO: 카카오톡 오픈채팅 URL
+  kakao: "",                      // 카카오톡 오픈채팅 URL이 생기면 입력 (버튼이 바로 연결됨)
+  kakaoId: "charles",             // 카카오톡 ID
   bizNo: "",                      // TODO: 사업자등록번호
 };
 
@@ -20,7 +21,7 @@ const NAV = [
   ["contact.html", "상담 문의"],
 ];
 
-function kakaoHref() { return SITE.kakao || "contact.html"; }
+function kakaoHref() { return SITE.kakao || "contact.html#channels"; }
 
 function renderHeader() {
   const el = document.getElementById("site-header");
@@ -52,6 +53,7 @@ function renderFooter() {
     `상호: ${SITE.company}`,
     SITE.ceo && `대표: ${SITE.ceo}`,
     SITE.phone && `전화: <a href="tel:${SITE.phone}">${SITE.phone}</a>`,
+    SITE.kakaoId && `카카오톡 ID: ${SITE.kakaoId}`,
     SITE.email && `이메일: <a href="mailto:${SITE.email}">${SITE.email}</a>`,
     SITE.bizNo && `사업자등록번호: ${SITE.bizNo}`,
   ].filter(Boolean).map(x => `<li>${x}</li>`).join("");
@@ -69,7 +71,15 @@ function renderFooter() {
 
 function fillContacts() {
   document.querySelectorAll("[data-kakao]").forEach(a => { a.href = kakaoHref(); });
-  if (!SITE.kakao) document.querySelectorAll("[data-kakao-wrap]").forEach(el => el.remove());
+  document.querySelectorAll("[data-kakao-id]").forEach(el => { el.textContent = SITE.kakaoId; });
+  document.querySelectorAll("[data-kakao-copy]").forEach(btn => {
+    if (SITE.kakao) { btn.outerHTML = `<a class="btn btn-primary" href="${SITE.kakao}" style="margin-top:auto">카카오톡 상담 열기</a>`; return; }
+    btn.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(SITE.kakaoId); btn.textContent = "ID 복사됨 · 카카오톡에서 친구 추가하세요"; }
+      catch { btn.textContent = "카카오톡 ID: " + SITE.kakaoId; }
+    });
+  });
+  if (!SITE.kakao && !SITE.kakaoId) document.querySelectorAll("[data-kakao-wrap]").forEach(el => el.remove());
   document.querySelectorAll("[data-phone]").forEach(a => {
     if (SITE.phone) { a.href = `tel:${SITE.phone}`; a.textContent = a.dataset.phone.replace("{phone}", SITE.phone); }
     else (a.closest("[data-phone-wrap]") || a).remove();
