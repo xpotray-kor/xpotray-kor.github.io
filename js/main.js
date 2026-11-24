@@ -2,8 +2,9 @@
 const SITE = {
   name: "Vivaldi 사계",
   nameKo: "비발디 사계",
-  ceo: "대표 성함 입력",          // TODO: 대표 성함
-  phone: "",                      // TODO: 예) 010-1234-5678 (비워두면 전화 버튼 숨김)
+  company: "비발디",               // 상호
+  ceo: "",                        // TODO: 대표 성함 (비워두면 숨김)
+  phone: "010-5555-8888",
   email: "",                      // TODO: 문의 이메일
   kakao: "",                      // TODO: 카카오톡 오픈채팅 URL
   bizNo: "",                      // TODO: 사업자등록번호
@@ -48,7 +49,8 @@ function renderFooter() {
   if (!el) return;
   el.className = "site-footer";
   const contact = [
-    `대표: ${SITE.ceo}`,
+    `상호: ${SITE.company}`,
+    SITE.ceo && `대표: ${SITE.ceo}`,
     SITE.phone && `전화: <a href="tel:${SITE.phone}">${SITE.phone}</a>`,
     SITE.email && `이메일: <a href="mailto:${SITE.email}">${SITE.email}</a>`,
     SITE.bizNo && `사업자등록번호: ${SITE.bizNo}`,
@@ -58,7 +60,7 @@ function renderFooter() {
       <div>
         <h4>${SITE.name} (${SITE.nameKo})</h4>
         <p style="margin:0 0 8px">경매·공매로 싸게 사고, 고쳐서, 숙박과 임대로 채웁니다.<br>낙찰부터 운영까지 한 팀이 끝까지 책임지는 부동산 파트너.</p>
-        <p style="margin:0">© ${new Date().getFullYear()} ${SITE.name}. All rights reserved.</p>
+        <p style="margin:0">© ${new Date().getFullYear()} ${SITE.company}. All rights reserved.</p>
       </div>
       <div><h4>바로가기</h4><ul>${NAV.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul></div>
       <div><h4>Contact</h4><ul>${contact}</ul></div>
@@ -67,6 +69,7 @@ function renderFooter() {
 
 function fillContacts() {
   document.querySelectorAll("[data-kakao]").forEach(a => { a.href = kakaoHref(); });
+  if (!SITE.kakao) document.querySelectorAll("[data-kakao-wrap]").forEach(el => el.remove());
   document.querySelectorAll("[data-phone]").forEach(a => {
     if (SITE.phone) { a.href = `tel:${SITE.phone}`; a.textContent = a.dataset.phone.replace("{phone}", SITE.phone); }
     else (a.closest("[data-phone-wrap]") || a).remove();
